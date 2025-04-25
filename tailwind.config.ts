@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,19 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// 兵役類別顏色
+				military: {
+					army: '#AEFFB4',        // 陸軍
+					navy: '#B4DAFF',        // 海軍
+					airForce: '#FFDD9E',    // 空軍
+					marines: '#FFB4B4',     // 海軍陸戰隊
+					alternative: '#FDFFA3', // 替代役
+					armyTraining: '#D8A0FF', // 陸軍軍訓
+					airForceTraining: '#FFB4E2', // 空軍軍訓
+					supplementary: '#FFD9A0', // 補充兵
+					navyShipTraining: '#A0E5FF', // 海艦軍訓
+					navyShipMan: '#C4C4FF'  // 海軍艦艇兵
 				}
 			},
 			borderRadius: {
