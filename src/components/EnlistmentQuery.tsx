@@ -103,7 +103,7 @@ const EnlistmentQuery = () => {
   };
 
   return (
-    <section id="enlistment-query" className="py-6">
+    <section id="enlistment-query" className="py-3"> {/* Reduced padding */}
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-700 rounded-xl shadow-lg p-6">
           <h2 className="text-2xl font-bold mb-6 text-white">入伍日期查詢</h2>
@@ -169,40 +169,48 @@ const EnlistmentQuery = () => {
                     <Button
                       variant="ghost"
                       onClick={() => toggleSort('militaryTypeId')}
-                      className="text-white hover:text-gray-300"
+                      className="text-white hover:text-gray-300 flex items-center gap-2"
                     >
                       服役役別
-                      <SortIcon column="militaryTypeId" />
+                      {sortConfig.key === 'militaryTypeId' && (
+                        sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                      )}
                     </Button>
                   </th>
                   <th className="p-4 whitespace-nowrap">
                     <Button
                       variant="ghost"
                       onClick={() => toggleSort('year')}
-                      className="text-white hover:text-gray-300"
+                      className="text-white hover:text-gray-300 flex items-center gap-2"
                     >
                       入伍年度
-                      <SortIcon column="year" />
+                      {sortConfig.key === 'year' && (
+                        sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                      )}
                     </Button>
                   </th>
                   <th className="p-4 whitespace-nowrap">
                     <Button
                       variant="ghost"
                       onClick={() => toggleSort('sequence')}
-                      className="text-white hover:text-gray-300"
+                      className="text-white hover:text-gray-300 flex items-center gap-2"
                     >
                       入伍梯次
-                      <SortIcon column="sequence" />
+                      {sortConfig.key === 'sequence' && (
+                        sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                      )}
                     </Button>
                   </th>
                   <th className="p-4 whitespace-nowrap">
                     <Button
                       variant="ghost"
                       onClick={() => toggleSort('date')}
-                      className="text-white hover:text-gray-300"
+                      className="text-white hover:text-gray-300 flex items-center gap-2"
                     >
                       入伍日期
-                      <SortIcon column="date" />
+                      {sortConfig.key === 'date' && (
+                        sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                      )}
                     </Button>
                   </th>
                 </tr>
@@ -215,7 +223,7 @@ const EnlistmentQuery = () => {
                   return (
                     <tr key={item.id} className="border-b border-gray-700/50">
                       <td className="p-4">
-                        <span className={`inline-block px-4 py-2 rounded-full ${militaryType?.colorClass || "bg-gray-700"}`}>
+                        <span className={`inline-block px-4 py-2 rounded-full text-black ${militaryType?.colorClass || "bg-gray-700"}`}>
                           {militaryType?.name || "未知"}
                         </span>
                       </td>
@@ -246,7 +254,7 @@ const EnlistmentQuery = () => {
               <Button
                 onClick={() => setShowAll(!showAll)}
                 variant="outline"
-                className="text-white border-gray-700 hover:bg-gray-800"
+                className="text-white bg-gray-800/50 hover:bg-gray-700 border-gray-600"
               >
                 {showAll ? "顯示較少" : "顯示更多"}
               </Button>

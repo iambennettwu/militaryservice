@@ -9,13 +9,13 @@ import Footer from "@/components/Footer";
 const Index = () => {
   const siteConfig = {
     email: "test@gamil.com",
-    adCode: "",  // Google AdSense代碼，從後台管理設定
+    adCode: "",
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
       <Navbar />
-      <main className="space-y-6">
+      <main className="pt-20 space-y-3"> {/* Added pt-20 for navbar and reduced space-y */}
         <EnlistmentQuery />
         <DischargeCalculator />
         <LatestNews />
