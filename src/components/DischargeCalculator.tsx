@@ -230,7 +230,7 @@ const DischargeCalculator = () => {
                 <p className="mt-2 text-lg">天</p>
                 {dischargeDate && (
                   <p className="mt-4 text-sm text-gray-600">
-                    預計退伍日期: {format(dischargeDate, "yyyy/MM/dd")}
+                    預計退伍日為： {format(dischargeDate, "yyyy/MM/dd")}
                   </p>
                 )}
               </div>
