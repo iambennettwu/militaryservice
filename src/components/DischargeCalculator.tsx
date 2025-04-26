@@ -46,17 +46,15 @@ const DischargeCalculator = () => {
     }
 
     try {
-      // 創建入伍日期
       const enlistmentDate = new Date(
         +enlistmentYear,
         (+enlistmentMonth) - 1,
         +enlistmentDay
       );
 
-      // 計算退伍日期
       let dischargeDateValue = new Date(enlistmentDate);
 
-      // 添加役期年月日
+      // Add service period
       if (servicePeriodYears !== "") {
         dischargeDateValue = addYears(dischargeDateValue, +servicePeriodYears);
       }
@@ -67,12 +65,14 @@ const DischargeCalculator = () => {
         dischargeDateValue = addDays(dischargeDateValue, +servicePeriodDays);
       }
 
-      // 減去折抵天數
+      // Subtract deduction days and one additional day
       if (deductionDays !== "") {
-        dischargeDateValue = addDays(dischargeDateValue, -Number(deductionDays));
+        dischargeDateValue = addDays(dischargeDateValue, -(Number(deductionDays) + 1));
+      } else {
+        dischargeDateValue = addDays(dischargeDateValue, -1);
       }
 
-      // 計算剩餘天數
+      // Calculate remaining days
       const today = new Date();
       const remainingDays = differenceInDays(dischargeDateValue, today);
 

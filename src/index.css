@@ -88,6 +88,18 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+  
+  html {
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+
+  section {
+    @apply py-8;
+  }
 }
 
 @layer base {
