@@ -7,7 +7,7 @@ export interface MilitaryType {
 
 export const militaryTypes: MilitaryType[] = [
   { id: "army", name: "陸軍", colorClass: "bg-military-army" },
-  { id: "navy", name: "海軍", colorClass: "bg-military-navy" },
+  { id: "marinesTraining", name: "海陸軍訓", colorClass: "bg-military-navy" },
   { id: "airForce", name: "空軍", colorClass: "bg-military-airForce" },
   { id: "marines", name: "海軍陸戰隊", colorClass: "bg-military-marines" },
   { id: "alternative", name: "替代役", colorClass: "bg-military-alternative" },
