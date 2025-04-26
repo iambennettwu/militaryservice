@@ -135,7 +135,6 @@ const EnlistmentQuery = () => {
               >
                 <option value="">全部年度</option>
                 <option value="2025">2025</option>
-                <option value="2026">2026</option>
               </select>
             </div>
             
