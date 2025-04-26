@@ -64,7 +64,7 @@ export default {
         },
         military: {
           army: '#AEFFB4',        // 陸軍
-          navy: '#B4DAFF',        // 海軍
+          marinesTraining: '#B4DAFF', // 海陸軍訓
           airForce: '#FFDD9E',    // 空軍
           marines: '#FFB4B4',     // 海軍陸戰隊
           alternative: '#FDFFA3', // 替代役
