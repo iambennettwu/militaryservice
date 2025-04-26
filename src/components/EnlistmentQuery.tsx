@@ -1,8 +1,8 @@
-
 import { useState } from "react";
 import { militaryTypes } from "@/data/militaryTypes";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEnlistmentDates } from "@/hooks/useEnlistmentDates";
 
 interface EnlistmentData {
   id: number;
@@ -12,7 +12,6 @@ interface EnlistmentData {
   date: string;
 }
 
-// 模擬資料，實際應從後端獲取
 const mockEnlistmentData: EnlistmentData[] = [
   { id: 1, militaryTypeId: "alternative", year: 2025, sequence: 269, date: "07/08" },
   { id: 2, militaryTypeId: "army", year: 2025, sequence: 111, date: "07/03" },
@@ -34,14 +33,14 @@ const EnlistmentQuery = () => {
     direction: 'asc' | 'desc';
   }>({ key: null, direction: 'asc' });
 
-  // 篩選及排序資料
+  const { data: enlistmentData = [], isLoading } = useEnlistmentDates();
+
   const processData = (data: EnlistmentData[]) => {
     const today = new Date();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth() + 1;
     const currentDay = today.getDate();
 
-    // 只顯示未來的日期
     let filteredData = data.filter(item => {
       const [month, day] = item.date.split("/").map(Number);
       return (
@@ -52,7 +51,6 @@ const EnlistmentQuery = () => {
       );
     });
 
-    // 應用篩選條件
     if (selectedType) {
       filteredData = filteredData.filter(item => item.militaryTypeId === selectedType);
     }
@@ -66,7 +64,6 @@ const EnlistmentQuery = () => {
       });
     }
 
-    // 應用排序
     if (sortConfig.key) {
       filteredData.sort((a, b) => {
         if (sortConfig.key === 'date') {
@@ -94,7 +91,7 @@ const EnlistmentQuery = () => {
     });
   };
 
-  const filteredData = processData(mockEnlistmentData);
+  const filteredData = processData(enlistmentData);
   const displayData = showAll ? filteredData : filteredData.slice(0, 4);
 
   const SortIcon = ({ column }: { column: keyof EnlistmentData }) => {
@@ -103,7 +100,7 @@ const EnlistmentQuery = () => {
   };
 
   return (
-    <section id="enlistment-query" className="py-3"> {/* Reduced padding */}
+    <section id="enlistment-query" className="py-3">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-700 rounded-xl shadow-lg p-6">
           <h2 className="text-2xl font-bold mb-6 text-white">入伍日期查詢</h2>
@@ -162,91 +159,95 @@ const EnlistmentQuery = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-white">
-              <thead>
-                <tr className="text-left border-b border-gray-700">
-                  <th className="p-4 whitespace-nowrap">
-                    <Button
-                      variant="ghost"
-                      onClick={() => toggleSort('militaryTypeId')}
-                      className="text-white hover:text-gray-300 flex items-center gap-2"
-                    >
-                      服役役別
-                      {sortConfig.key === 'militaryTypeId' && (
-                        sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
-                      )}
-                    </Button>
-                  </th>
-                  <th className="p-4 whitespace-nowrap">
-                    <Button
-                      variant="ghost"
-                      onClick={() => toggleSort('year')}
-                      className="text-white hover:text-gray-300 flex items-center gap-2"
-                    >
-                      入伍年度
-                      {sortConfig.key === 'year' && (
-                        sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
-                      )}
-                    </Button>
-                  </th>
-                  <th className="p-4 whitespace-nowrap">
-                    <Button
-                      variant="ghost"
-                      onClick={() => toggleSort('sequence')}
-                      className="text-white hover:text-gray-300 flex items-center gap-2"
-                    >
-                      入伍梯次
-                      {sortConfig.key === 'sequence' && (
-                        sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
-                      )}
-                    </Button>
-                  </th>
-                  <th className="p-4 whitespace-nowrap">
-                    <Button
-                      variant="ghost"
-                      onClick={() => toggleSort('date')}
-                      className="text-white hover:text-gray-300 flex items-center gap-2"
-                    >
-                      入伍日期
-                      {sortConfig.key === 'date' && (
-                        sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
-                      )}
-                    </Button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {displayData.map((item) => {
-                  const militaryType = militaryTypes.find(
-                    (type) => type.id === item.militaryTypeId
-                  );
-                  return (
-                    <tr key={item.id} className="border-b border-gray-700/50">
-                      <td className="p-4">
-                        <span className={`inline-block px-4 py-2 rounded-full text-black ${militaryType?.colorClass || "bg-gray-700"}`}>
-                          {militaryType?.name || "未知"}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <span className="bg-gray-800 px-4 py-2 rounded-full">
-                          {item.year}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <span className="bg-gray-800 px-4 py-2 rounded-full">
-                          {item.sequence}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <span className="bg-gray-800 px-4 py-2 rounded-full">
-                          {item.date}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            {isLoading ? (
+              <div className="text-center text-white py-4">載入中...</div>
+            ) : (
+              <table className="w-full text-white">
+                <thead>
+                  <tr className="text-left border-b border-gray-700">
+                    <th className="p-4 whitespace-nowrap">
+                      <Button
+                        variant="ghost"
+                        onClick={() => toggleSort('militaryTypeId')}
+                        className="text-white hover:text-gray-300 flex items-center gap-2"
+                      >
+                        服役役別
+                        {sortConfig.key === 'militaryTypeId' && (
+                          sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </th>
+                    <th className="p-4 whitespace-nowrap">
+                      <Button
+                        variant="ghost"
+                        onClick={() => toggleSort('year')}
+                        className="text-white hover:text-gray-300 flex items-center gap-2"
+                      >
+                        入伍年度
+                        {sortConfig.key === 'year' && (
+                          sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </th>
+                    <th className="p-4 whitespace-nowrap">
+                      <Button
+                        variant="ghost"
+                        onClick={() => toggleSort('sequence')}
+                        className="text-white hover:text-gray-300 flex items-center gap-2"
+                      >
+                        入伍梯次
+                        {sortConfig.key === 'sequence' && (
+                          sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </th>
+                    <th className="p-4 whitespace-nowrap">
+                      <Button
+                        variant="ghost"
+                        onClick={() => toggleSort('date')}
+                        className="text-white hover:text-gray-300 flex items-center gap-2"
+                      >
+                        入伍日期
+                        {sortConfig.key === 'date' && (
+                          sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {displayData.map((item) => {
+                    const militaryType = militaryTypes.find(
+                      (type) => type.id === item.militaryTypeId
+                    );
+                    return (
+                      <tr key={item.id} className="border-b border-gray-700/50">
+                        <td className="p-4">
+                          <span className={`inline-block px-4 py-2 rounded-full text-black ${militaryType?.colorClass || "bg-gray-700"}`}>
+                            {militaryType?.name || "未知"}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <span className="bg-gray-800 px-4 py-2 rounded-full">
+                            {item.year}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <span className="bg-gray-800 px-4 py-2 rounded-full">
+                            {item.sequence}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <span className="bg-gray-800 px-4 py-2 rounded-full">
+                            {item.date}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
           </div>
 
           {filteredData.length > 4 && (

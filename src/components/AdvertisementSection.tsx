@@ -1,16 +1,14 @@
 
 import { useEffect, useRef } from "react";
+import { useAdvertisements } from "@/hooks/useAdvertisements";
 
-interface AdvertisementProps {
-  adCode?: string;
-}
-
-const AdvertisementSection = ({ adCode = "" }: AdvertisementProps) => {
+const AdvertisementSection = () => {
   const adContainerRef = useRef<HTMLDivElement>(null);
+  const { data: advertisement } = useAdvertisements();
 
   useEffect(() => {
-    if (adCode && adContainerRef.current) {
-      adContainerRef.current.innerHTML = adCode;
+    if (advertisement?.ad_code && adContainerRef.current) {
+      adContainerRef.current.innerHTML = advertisement.ad_code;
       const scripts = adContainerRef.current.querySelectorAll("script");
       scripts.forEach((script) => {
         const newScript = document.createElement("script");
@@ -21,9 +19,9 @@ const AdvertisementSection = ({ adCode = "" }: AdvertisementProps) => {
         script.parentNode?.replaceChild(newScript, script);
       });
     }
-  }, [adCode]);
+  }, [advertisement?.ad_code]);
 
-  if (!adCode) return null;
+  if (!advertisement?.ad_code) return null;
 
   return (
     <section>

@@ -9,7 +9,112 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      advertisements: {
+        Row: {
+          ad_code: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+        }
+        Insert: {
+          ad_code: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+        }
+        Update: {
+          ad_code?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+        }
+        Relationships: []
+      }
+      enlistment_dates: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          military_type_id: string
+          sequence: number
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          military_type_id: string
+          sequence: number
+          year: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          military_type_id?: string
+          sequence?: number
+          year?: number
+        }
+        Relationships: []
+      }
+      news: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          title: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          title: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          title?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      site_config: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
       table01: {
+        Row: {
+          created_at: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+        }
+        Relationships: []
+      }
+      test: {
         Row: {
           created_at: string
           id: number
