@@ -1,6 +1,8 @@
 
 import { useState } from "react";
 import { militaryTypes } from "@/data/militaryTypes";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface EnlistmentData {
   id: number;
@@ -27,33 +29,92 @@ const EnlistmentQuery = () => {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof EnlistmentData | null;
+    direction: 'asc' | 'desc';
+  }>({ key: null, direction: 'asc' });
 
-  // 篩選資料
-  const filteredData = mockEnlistmentData.filter((item) => {
-    if (selectedType && item.militaryTypeId !== selectedType) return false;
-    if (selectedYear && item.year !== selectedYear) return false;
-    if (selectedMonth) {
-      const month = parseInt(item.date.split("/")[0]);
-      if (month !== selectedMonth) return false;
+  // 篩選及排序資料
+  const processData = (data: EnlistmentData[]) => {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1;
+    const currentDay = today.getDate();
+
+    // 只顯示未來的日期
+    let filteredData = data.filter(item => {
+      const [month, day] = item.date.split("/").map(Number);
+      return (
+        item.year > currentYear ||
+        (item.year === currentYear &&
+          (month > currentMonth ||
+            (month === currentMonth && day >= currentDay)))
+      );
+    });
+
+    // 應用篩選條件
+    if (selectedType) {
+      filteredData = filteredData.filter(item => item.militaryTypeId === selectedType);
     }
-    return true;
-  });
+    if (selectedYear) {
+      filteredData = filteredData.filter(item => item.year === selectedYear);
+    }
+    if (selectedMonth) {
+      filteredData = filteredData.filter(item => {
+        const month = parseInt(item.date.split("/")[0]);
+        return month === selectedMonth;
+      });
+    }
 
+    // 應用排序
+    if (sortConfig.key) {
+      filteredData.sort((a, b) => {
+        if (sortConfig.key === 'date') {
+          const [monthA, dayA] = a.date.split("/").map(Number);
+          const [monthB, dayB] = b.date.split("/").map(Number);
+          const dateA = new Date(2000, monthA - 1, dayA);
+          const dateB = new Date(2000, monthB - 1, dayB);
+          return sortConfig.direction === 'asc' 
+            ? dateA.getTime() - dateB.getTime()
+            : dateB.getTime() - dateA.getTime();
+        }
+        return sortConfig.direction === 'asc'
+          ? a[sortConfig.key] > b[sortConfig.key] ? 1 : -1
+          : b[sortConfig.key] > a[sortConfig.key] ? 1 : -1;
+      });
+    }
+
+    return filteredData;
+  };
+
+  const toggleSort = (key: keyof EnlistmentData) => {
+    setSortConfig({
+      key,
+      direction: sortConfig.key === key && sortConfig.direction === 'asc' ? 'desc' : 'asc'
+    });
+  };
+
+  const filteredData = processData(mockEnlistmentData);
   const displayData = showAll ? filteredData : filteredData.slice(0, 4);
 
+  const SortIcon = ({ column }: { column: keyof EnlistmentData }) => {
+    if (sortConfig.key !== column) return null;
+    return sortConfig.direction === 'asc' ? <ArrowUp className="inline w-4 h-4 ml-1" /> : <ArrowDown className="inline w-4 h-4 ml-1" />;
+  };
+
   return (
-    <section id="enlistment-query" className="py-16 pt-28">
+    <section id="enlistment-query" className="py-6">
       <div className="container mx-auto px-4 max-w-4xl">
-        <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
-          <h2 className="text-2xl font-bold mb-8">入伍日期查詢</h2>
+        <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-700 rounded-xl shadow-lg p-6">
+          <h2 className="text-2xl font-bold mb-6 text-white">入伍日期查詢</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-200 mb-2">
                 請選擇服役役別
               </label>
               <select
-                className="w-full p-3 border rounded-md bg-gray-100"
+                className="w-full p-3 rounded-md bg-gray-800 text-white border border-gray-700"
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
               >
@@ -67,11 +128,11 @@ const EnlistmentQuery = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-200 mb-2">
                 請選擇入伍年度
               </label>
               <select
-                className="w-full p-3 border rounded-md bg-gray-100"
+                className="w-full p-3 rounded-md bg-gray-800 text-white border border-gray-700"
                 value={selectedYear || ""}
                 onChange={(e) => setSelectedYear(e.target.value ? parseInt(e.target.value) : null)}
               >
@@ -82,11 +143,11 @@ const EnlistmentQuery = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-200 mb-2">
                 請選擇入伍月份
               </label>
               <select
-                className="w-full p-3 border rounded-md bg-gray-100"
+                className="w-full p-3 rounded-md bg-gray-800 text-white border border-gray-700"
                 value={selectedMonth || ""}
                 onChange={(e) => setSelectedMonth(e.target.value ? parseInt(e.target.value) : null)}
               >
@@ -101,13 +162,49 @@ const EnlistmentQuery = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full text-white">
               <thead>
-                <tr className="bg-gray-50 text-left">
-                  <th className="p-4 whitespace-nowrap">服役役別</th>
-                  <th className="p-4 whitespace-nowrap">入伍年度</th>
-                  <th className="p-4 whitespace-nowrap">入伍梯次</th>
-                  <th className="p-4 whitespace-nowrap">入伍日期</th>
+                <tr className="text-left border-b border-gray-700">
+                  <th className="p-4 whitespace-nowrap">
+                    <Button
+                      variant="ghost"
+                      onClick={() => toggleSort('militaryTypeId')}
+                      className="text-white hover:text-gray-300"
+                    >
+                      服役役別
+                      <SortIcon column="militaryTypeId" />
+                    </Button>
+                  </th>
+                  <th className="p-4 whitespace-nowrap">
+                    <Button
+                      variant="ghost"
+                      onClick={() => toggleSort('year')}
+                      className="text-white hover:text-gray-300"
+                    >
+                      入伍年度
+                      <SortIcon column="year" />
+                    </Button>
+                  </th>
+                  <th className="p-4 whitespace-nowrap">
+                    <Button
+                      variant="ghost"
+                      onClick={() => toggleSort('sequence')}
+                      className="text-white hover:text-gray-300"
+                    >
+                      入伍梯次
+                      <SortIcon column="sequence" />
+                    </Button>
+                  </th>
+                  <th className="p-4 whitespace-nowrap">
+                    <Button
+                      variant="ghost"
+                      onClick={() => toggleSort('date')}
+                      className="text-white hover:text-gray-300"
+                    >
+                      入伍日期
+                      <SortIcon column="date" />
+                    </Button>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -116,28 +213,24 @@ const EnlistmentQuery = () => {
                     (type) => type.id === item.militaryTypeId
                   );
                   return (
-                    <tr key={item.id} className="border-t">
+                    <tr key={item.id} className="border-b border-gray-700/50">
                       <td className="p-4">
-                        <span
-                          className={`inline-block px-4 py-2 rounded-full ${
-                            militaryType?.colorClass || "bg-gray-200"
-                          }`}
-                        >
+                        <span className={`inline-block px-4 py-2 rounded-full ${militaryType?.colorClass || "bg-gray-700"}`}>
                           {militaryType?.name || "未知"}
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="bg-gray-200 px-4 py-2 rounded-full">
+                        <span className="bg-gray-800 px-4 py-2 rounded-full">
                           {item.year}
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="bg-gray-200 px-4 py-2 rounded-full">
+                        <span className="bg-gray-800 px-4 py-2 rounded-full">
                           {item.sequence}
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className="bg-gray-200 px-4 py-2 rounded-full">
+                        <span className="bg-gray-800 px-4 py-2 rounded-full">
                           {item.date}
                         </span>
                       </td>
@@ -150,12 +243,13 @@ const EnlistmentQuery = () => {
 
           {filteredData.length > 4 && (
             <div className="mt-6 text-center">
-              <button
+              <Button
                 onClick={() => setShowAll(!showAll)}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-200"
+                variant="outline"
+                className="text-white border-gray-700 hover:bg-gray-800"
               >
                 {showAll ? "顯示較少" : "顯示更多"}
-              </button>
+              </Button>
             </div>
           )}
         </div>
