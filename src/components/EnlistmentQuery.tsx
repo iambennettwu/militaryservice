@@ -255,21 +255,19 @@ const EnlistmentQuery = () => {
                     <PaginationContent>
                       <PaginationItem>
                         <PaginationPrevious 
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          className={`${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          disabled={currentPage === 1}
+                          onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                          className={`bg-gray-800 text-white hover:bg-gray-700 ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}`}
                         />
                       </PaginationItem>
                       <PaginationItem>
-                        <span className="px-4 py-2">
-                          {currentPage} / {totalPages}
+                        <span className="px-4 py-2 bg-gray-800 text-white rounded-md">
+                          {currentPage} / {totalPages || 1}
                         </span>
                       </PaginationItem>
                       <PaginationItem>
                         <PaginationNext
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          className={`${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          disabled={currentPage === totalPages}
+                          onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                          className={`bg-gray-800 text-white hover:bg-gray-700 ${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
                         />
                       </PaginationItem>
                     </PaginationContent>

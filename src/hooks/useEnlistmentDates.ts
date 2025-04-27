@@ -12,7 +12,12 @@ export function useEnlistmentDates() {
         .order("year", { ascending: true });
 
       if (error) throw error;
-      return data;
+      
+      // Map the database field military_type_id to militaryTypeId for frontend consistency
+      return data.map(item => ({
+        ...item,
+        militaryTypeId: item.military_type_id
+      }));
     },
   });
 }
