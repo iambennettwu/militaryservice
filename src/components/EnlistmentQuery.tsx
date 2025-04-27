@@ -3,31 +3,30 @@ import { militaryTypes } from "@/data/militaryTypes";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEnlistmentDates } from "@/hooks/useEnlistmentDates";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface EnlistmentData {
-  id: number;
+  id: string;
   militaryTypeId: string;
+  military_type_id: string;
   year: number;
   sequence: number;
   date: string;
 }
 
-const mockEnlistmentData: EnlistmentData[] = [
-  { id: 1, militaryTypeId: "alternative", year: 2025, sequence: 269, date: "07/08" },
-  { id: 2, militaryTypeId: "army", year: 2025, sequence: 111, date: "07/03" },
-  { id: 3, militaryTypeId: "airForce", year: 2025, sequence: 123, date: "07/02" },
-  { id: 4, militaryTypeId: "supplementary", year: 2025, sequence: 999, date: "07/09" },
-  { id: 5, militaryTypeId: "navy", year: 2025, sequence: 222, date: "08/15" },
-  { id: 6, militaryTypeId: "marines", year: 2025, sequence: 333, date: "09/22" },
-  { id: 7, militaryTypeId: "alternative", year: 2026, sequence: 100, date: "01/15" },
-  { id: 8, militaryTypeId: "army", year: 2026, sequence: 200, date: "02/20" },
-];
+const ITEMS_PER_PAGE = 5;
 
 const EnlistmentQuery = () => {
   const [selectedType, setSelectedType] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
-  const [showAll, setShowAll] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{
     key: keyof EnlistmentData | null;
     direction: 'asc' | 'desc';
@@ -41,7 +40,10 @@ const EnlistmentQuery = () => {
     const currentMonth = today.getMonth() + 1;
     const currentDay = today.getDate();
 
-    let filteredData = data.filter(item => {
+    let filteredData = data.map(item => ({
+      ...item,
+      militaryTypeId: item.military_type_id,
+    })).filter(item => {
       const [month, day] = item.date.split("/").map(Number);
       return (
         item.year > currentYear ||
@@ -92,11 +94,12 @@ const EnlistmentQuery = () => {
   };
 
   const filteredData = processData(enlistmentData);
-  const displayData = showAll ? filteredData : filteredData.slice(0, 4);
+  const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const displayData = filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-  const SortIcon = ({ column }: { column: keyof EnlistmentData }) => {
-    if (sortConfig.key !== column) return null;
-    return sortConfig.direction === 'asc' ? <ArrowUp className="inline w-4 h-4 ml-1" /> : <ArrowDown className="inline w-4 h-4 ml-1" />;
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -161,105 +164,120 @@ const EnlistmentQuery = () => {
             {isLoading ? (
               <div className="text-center text-white py-4">載入中...</div>
             ) : (
-              <table className="w-full text-white">
-                <thead>
-                  <tr className="text-left border-b border-gray-700">
-                    <th className="p-4 whitespace-nowrap">
-                      <Button
-                        variant="ghost"
-                        onClick={() => toggleSort('militaryTypeId')}
-                        className="text-white hover:text-gray-300 flex items-center gap-2"
-                      >
-                        服役役別
-                        {sortConfig.key === 'militaryTypeId' && (
-                          sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
-                        )}
-                      </Button>
-                    </th>
-                    <th className="p-4 whitespace-nowrap">
-                      <Button
-                        variant="ghost"
-                        onClick={() => toggleSort('year')}
-                        className="text-white hover:text-gray-300 flex items-center gap-2"
-                      >
-                        入伍年度
-                        {sortConfig.key === 'year' && (
-                          sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
-                        )}
-                      </Button>
-                    </th>
-                    <th className="p-4 whitespace-nowrap">
-                      <Button
-                        variant="ghost"
-                        onClick={() => toggleSort('sequence')}
-                        className="text-white hover:text-gray-300 flex items-center gap-2"
-                      >
-                        入伍梯次
-                        {sortConfig.key === 'sequence' && (
-                          sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
-                        )}
-                      </Button>
-                    </th>
-                    <th className="p-4 whitespace-nowrap">
-                      <Button
-                        variant="ghost"
-                        onClick={() => toggleSort('date')}
-                        className="text-white hover:text-gray-300 flex items-center gap-2"
-                      >
-                        入伍日期
-                        {sortConfig.key === 'date' && (
-                          sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
-                        )}
-                      </Button>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {displayData.map((item) => {
-                    const militaryType = militaryTypes.find(
-                      (type) => type.id === item.militaryTypeId
-                    );
-                    return (
-                      <tr key={item.id} className="border-b border-gray-700/50">
-                        <td className="p-4">
-                          <span className={`inline-block px-4 py-2 rounded-full text-black ${militaryType?.colorClass || "bg-gray-700"}`}>
-                            {militaryType?.name || "未知"}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          <span className="bg-gray-800 px-4 py-2 rounded-full">
-                            {item.year}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          <span className="bg-gray-800 px-4 py-2 rounded-full">
-                            {item.sequence}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          <span className="bg-gray-800 px-4 py-2 rounded-full">
-                            {item.date}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <>
+                <table className="w-full text-white">
+                  <thead>
+                    <tr className="text-left border-b border-gray-700">
+                      <th className="p-4 whitespace-nowrap">
+                        <Button
+                          variant="ghost"
+                          onClick={() => toggleSort('militaryTypeId')}
+                          className="text-white hover:text-gray-300 flex items-center gap-2"
+                        >
+                          服役役別
+                          {sortConfig.key === 'militaryTypeId' && (
+                            sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </th>
+                      <th className="p-4 whitespace-nowrap">
+                        <Button
+                          variant="ghost"
+                          onClick={() => toggleSort('year')}
+                          className="text-white hover:text-gray-300 flex items-center gap-2"
+                        >
+                          入伍年度
+                          {sortConfig.key === 'year' && (
+                            sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </th>
+                      <th className="p-4 whitespace-nowrap">
+                        <Button
+                          variant="ghost"
+                          onClick={() => toggleSort('sequence')}
+                          className="text-white hover:text-gray-300 flex items-center gap-2"
+                        >
+                          入伍梯次
+                          {sortConfig.key === 'sequence' && (
+                            sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </th>
+                      <th className="p-4 whitespace-nowrap">
+                        <Button
+                          variant="ghost"
+                          onClick={() => toggleSort('date')}
+                          className="text-white hover:text-gray-300 flex items-center gap-2"
+                        >
+                          入伍日期
+                          {sortConfig.key === 'date' && (
+                            sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {displayData.map((item) => {
+                      const militaryType = militaryTypes.find(
+                        (type) => type.id === item.militaryTypeId
+                      );
+                      return (
+                        <tr key={item.id} className="border-b border-gray-700/50">
+                          <td className="p-4">
+                            <span className={`inline-block px-4 py-2 rounded-full text-black ${militaryType?.colorClass || "bg-gray-700"}`}>
+                              {militaryType?.name || "未知"}
+                            </span>
+                          </td>
+                          <td className="p-4">
+                            <span className="bg-gray-800 px-4 py-2 rounded-full">
+                              {item.year}
+                            </span>
+                          </td>
+                          <td className="p-4">
+                            <span className="bg-gray-800 px-4 py-2 rounded-full">
+                              {item.sequence}
+                            </span>
+                          </td>
+                          <td className="p-4">
+                            <span className="bg-gray-800 px-4 py-2 rounded-full">
+                              {item.date}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <div className="mt-6">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious 
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          className={`${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          disabled={currentPage === 1}
+                        />
+                      </PaginationItem>
+                      <PaginationItem>
+                        <span className="px-4 py-2">
+                          {currentPage} / {totalPages}
+                        </span>
+                      </PaginationItem>
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          className={`${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          disabled={currentPage === totalPages}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              </>
             )}
           </div>
-
-          {filteredData.length > 4 && (
-            <div className="mt-6 text-center">
-              <Button
-                onClick={() => setShowAll(!showAll)}
-                variant="outline"
-                className="text-white bg-gray-800/50 hover:bg-gray-700 border-gray-600"
-              >
-                {showAll ? "顯示較少" : "顯示更多"}
-              </Button>
-            </div>
-          )}
         </div>
       </div>
     </section>

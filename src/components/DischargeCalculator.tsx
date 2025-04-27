@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { differenceInDays, addYears, addMonths, addDays, format } from "date-fns";
 
@@ -93,7 +92,7 @@ const DischargeCalculator = () => {
 
   // 產生月份選項
   const monthOptions = () => {
-    return Array.from({ length: 12 }, (_, i) => i + 1);
+    return Array.from({ length: 11 }, (_, i) => i + 1);
   };
 
   // 產生日期選項
@@ -159,11 +158,11 @@ const DischargeCalculator = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   役期長度
                 </label>
-                <div className="flex space-x-2">
+                <div className="flex flex-wrap md:flex-nowrap gap-2">
                   <select
                     value={servicePeriodYears}
                     onChange={(e) => setServicePeriodYears(e.target.value ? parseInt(e.target.value) : "")}
-                    className="flex-1 p-3 border rounded-md bg-gray-100"
+                    className="flex-1 p-3 border rounded-md bg-gray-100 min-w-[100px]"
                   >
                     <option value="">年</option>
                     {[0, 1, 2, 3, 4].map((year) => (
@@ -175,7 +174,7 @@ const DischargeCalculator = () => {
                   <select
                     value={servicePeriodMonths}
                     onChange={(e) => setServicePeriodMonths(e.target.value ? parseInt(e.target.value) : "")}
-                    className="flex-1 p-3 border rounded-md bg-gray-100"
+                    className="flex-1 p-3 border rounded-md bg-gray-100 min-w-[100px]"
                   >
                     <option value="">月</option>
                     {monthOptions().map((month) => (
@@ -187,7 +186,7 @@ const DischargeCalculator = () => {
                   <select
                     value={servicePeriodDays}
                     onChange={(e) => setServicePeriodDays(e.target.value ? parseInt(e.target.value) : "")}
-                    className="flex-1 p-3 border rounded-md bg-gray-100"
+                    className="flex-1 p-3 border rounded-md bg-gray-100 min-w-[100px]"
                   >
                     <option value="">日</option>
                     {dayOptions().map((day) => (
@@ -204,7 +203,7 @@ const DischargeCalculator = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   兵役折抵
                 </label>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 w-full">
                   <input
                     type="number"
                     min="0"
@@ -213,10 +212,10 @@ const DischargeCalculator = () => {
                       const value = e.target.value;
                       setDeductionDays(value === "" ? "" : parseInt(value));
                     }}
-                    className="flex-1 p-3 border rounded-md bg-gray-100"
+                    className="flex-1 p-3 border rounded-md bg-gray-100 w-full"
                     placeholder="天數"
                   />
-                  <span className="text-gray-500">日</span>
+                  <span className="text-gray-500 whitespace-nowrap">日</span>
                 </div>
               </div>
             </div>
