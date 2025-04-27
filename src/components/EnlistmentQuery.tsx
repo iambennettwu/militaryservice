@@ -10,6 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface EnlistmentData {
   id: string;
