@@ -35,7 +35,7 @@ export type Database = {
           created_at: string
           date: string
           id: string
-          militaryTypeId: string
+          military_type_id: string
           sequence: number
           year: number
         }
@@ -43,7 +43,7 @@ export type Database = {
           created_at?: string
           date: string
           id?: string
-          militaryTypeId: string
+          military_type_id: string
           sequence: number
           year: number
         }
@@ -51,7 +51,7 @@ export type Database = {
           created_at?: string
           date?: string
           id?: string
-          militaryTypeId?: string
+          military_type_id?: string
           sequence?: number
           year?: number
         }

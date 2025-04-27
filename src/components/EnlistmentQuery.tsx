@@ -103,7 +103,7 @@ const EnlistmentQuery = () => {
   };
 
   return (
-    <section id="enlistment-query" className="py-3">
+    <section id="enlistment-query" className="py-1">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-700 rounded-xl shadow-lg p-6">
           <h2 className="text-2xl font-bold mb-6 text-white">入伍日期查詢</h2>
@@ -257,7 +257,9 @@ const EnlistmentQuery = () => {
                         <PaginationPrevious 
                           onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
                           className={`bg-gray-800 text-white hover:bg-gray-700 ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}`}
-                        />
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                        </PaginationPrevious>
                       </PaginationItem>
                       <PaginationItem>
                         <span className="px-4 py-2 bg-gray-800 text-white rounded-md">
@@ -268,7 +270,9 @@ const EnlistmentQuery = () => {
                         <PaginationNext
                           onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
                           className={`bg-gray-800 text-white hover:bg-gray-700 ${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
-                        />
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </PaginationNext>
                       </PaginationItem>
                     </PaginationContent>
                   </Pagination>

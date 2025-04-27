@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNews } from "@/hooks/useNews";
 
@@ -9,7 +8,7 @@ const LatestNews = () => {
   const displayNews = showAll ? news : news.slice(0, 3);
 
   return (
-    <section id="latest-news" className="py-3">
+    <section id="latest-news" className="py-1 mb-8">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
           <h2 className="text-2xl font-bold mb-8">最新消息</h2>

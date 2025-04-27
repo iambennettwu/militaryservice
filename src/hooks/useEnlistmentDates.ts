@@ -13,10 +13,10 @@ export function useEnlistmentDates() {
 
       if (error) throw error;
       
-      // Map the database field military_type_id to militaryTypeId for frontend consistency
       return data.map(item => ({
         ...item,
-        militaryTypeId: item.military_type_id
+        militaryTypeId: item.military_type_id,
+        military_type_id: item.military_type_id // Keep this for type compatibility
       }));
     },
   });

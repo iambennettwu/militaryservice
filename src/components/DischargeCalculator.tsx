@@ -101,7 +101,7 @@ const DischargeCalculator = () => {
   };
 
   return (
-    <section id="discharge-calculator" className="py-16">
+    <section id="discharge-calculator" className="py-1">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
           <h2 className="text-2xl font-bold mb-8">退伍日試算</h2>
