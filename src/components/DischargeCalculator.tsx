@@ -92,7 +92,7 @@ const DischargeCalculator = () => {
 
   // 產生月份選項
   const monthOptions = () => {
-    return Array.from({ length: 11 }, (_, i) => i + 1);
+    return Array.from({ length: 12 }, (_, i) => i + 1);
   };
 
   // 產生日期選項
