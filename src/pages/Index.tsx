@@ -16,7 +16,7 @@ const Index = () => {
         <LatestNews />
         <AdvertisementSection />
       </main>
-      <Footer />
+      <Footer className="mt-12" /> {/* Increased margin-top */}
     </div>
   );
 };
