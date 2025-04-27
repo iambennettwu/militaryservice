@@ -1,11 +1,11 @@
 
-export interface militaryTypeId {
+export interface militaryType {
   id: string;
   name: string;
   colorClass: string;
 }
 
-export const militaryTypes: militaryTypeId[] = [
+export const militaryTypes: militaryType[] = [
   { id: "army", name: "陸軍", colorClass: "bg-military-army" },
   { id: "marinesTraining", name: "海陸軍訓", colorClass: "bg-military-marinesTraining" },
   { id: "airForce", name: "空軍", colorClass: "bg-military-airForce" },
