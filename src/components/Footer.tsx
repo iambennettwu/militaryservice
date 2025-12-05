@@ -1,11 +1,16 @@
 
 import { useSiteConfig } from "@/hooks/useSiteConfig";
+import { cn } from "@/lib/utils";
 
-const Footer = () => {
+interface FooterProps {
+  className?: string;
+}
+
+const Footer = ({ className }: FooterProps) => {
   const { data: siteConfig } = useSiteConfig();
 
   return (
-    <footer className="bg-gray-100 py-8">
+    <footer className={cn("bg-gray-100 py-8", className)}>
       <div className="container mx-auto px-4 text-center text-gray-600 text-sm">
         <p className="mb-2">服役入伍資訊查詢．問題回報信箱：{siteConfig?.email || "載入中..."}</p>
         <p>
