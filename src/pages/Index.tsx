@@ -10,9 +10,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
       <Navbar />
-      <main className="pt-20 space-y-6">  {/* Adjusted space-y from space-y-3 to space-y-6 */}
-        <EnlistmentQuery />
+      <main className="pt-20 space-y-6">
         <DischargeCalculator />
+        <EnlistmentQuery />
         <LatestNews />
         <AdvertisementSection />
       </main>

@@ -35,16 +35,16 @@ const Navbar = () => {
         <div className="font-bold text-xl md:text-2xl">服役入伍資訊查詢</div>
         <nav className="hidden md:flex items-center">
           <button
-            onClick={() => scrollToSection("enlistment-query")}
-            className="text-gray-800 hover:text-black font-medium px-8"
-          >
-            入伍日期
-          </button>
-          <button
             onClick={() => scrollToSection("discharge-calculator")}
             className="text-gray-800 hover:text-black font-medium px-8"
           >
             退伍日試算
+          </button>
+          <button
+            onClick={() => scrollToSection("enlistment-query")}
+            className="text-gray-800 hover:text-black font-medium px-8"
+          >
+            入伍日期
           </button>
           <button
             onClick={() => scrollToSection("latest-news")}
@@ -65,16 +65,16 @@ const Navbar = () => {
           {isMenuOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2">
               <button
-                onClick={() => scrollToSection("enlistment-query")}
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-              >
-                入伍日期
-              </button>
-              <button
                 onClick={() => scrollToSection("discharge-calculator")}
                 className="block w-full text-left px-4 py-2 hover:bg-gray-100"
               >
                 退伍日試算
+              </button>
+              <button
+                onClick={() => scrollToSection("enlistment-query")}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              >
+                入伍日期
               </button>
               <button
                 onClick={() => scrollToSection("latest-news")}
